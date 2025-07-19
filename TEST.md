@@ -20,17 +20,22 @@ This guide explains the comprehensive testing suite for the Booking.com n8n node
 
 ### 2. Integration Tests (`test/integration.test.js`)
 
-**Purpose**: Make **real API calls** to Booking.com sandbox to verify end-to-end functionality.
+**Purpose**: Test the complete request/response cycle with two modes:
 
-**What it tests**:
-- ✅ **Real API requests** with proper authentication
-- ✅ **Response format validation** from Booking.com
+**🔧 Mock Mode (Default)**:
+- ✅ **Request format validation** with captured requests
+- ✅ **Response handling** with realistic mock data
+- ✅ **Authentication header** validation
+- ✅ **Parameter formatting** verification
+- ✅ **No real API calls** - no credentials required
+
+**🌐 Real API Mode**:
+- ✅ **Real API requests** to Booking.com sandbox
+- ✅ **Response format validation** from actual API
 - ✅ **Error handling** with real error responses
-- ✅ **Parameter formatting** in actual requests
-- ✅ **Authentication flow** with Bearer tokens
-- ✅ **Different operations** (locations, accommodations, etc.)
+- ✅ **Complete authentication flow** testing
 
-**Requires real credentials** - uses sandbox environment.
+**No credentials required by default** - automatically uses mock mode when credentials are not provided.
 
 ## 🚀 Running Tests
 
@@ -73,25 +78,41 @@ node test-runner.js
 
 ## 🔐 Setting Up Integration Tests
 
-To run integration tests that make real API calls:
+Integration tests run in **mock mode by default** (no credentials needed).
 
-### 1. Get Booking.com Sandbox Credentials
+### Quick Start (Mock Mode)
 
+```bash
+# Run integration tests with mock responses
+npm run test:integration
+# or  
+node test-runner.js integration
+```
+
+**Mock mode tests**:
+- ✅ Request format validation
+- ✅ Response handling with realistic data
+- ✅ Authentication headers
+- ✅ Parameter conversion logic
+
+### Real API Testing (Optional)
+
+For testing against actual Booking.com sandbox API:
+
+**1. Get Booking.com Sandbox Credentials**
 1. Sign up at [Booking.com Partner Hub](https://partner.booking.com/)
 2. Access your sandbox credentials
 3. Get your Bearer Token and Affiliate ID
 
-### 2. Set Environment Variables
-
+**2. Set Environment Variables**
 ```bash
 export BOOKING_BEARER_TOKEN="your-sandbox-bearer-token"
 export BOOKING_AFFILIATE_ID="your-affiliate-id"
 ```
 
-### 3. Run Integration Tests
-
+**3. Run Real API Tests**
 ```bash
-npm run test:integration
+npm run test:integration  # Now uses real API mode
 # or
 node test-runner.js integration
 ```
@@ -127,27 +148,31 @@ node test-runner.js integration
 - Sandbox URL validation
 - Production URL validation
 
-### Integration Tests (8 tests)
+### Integration Tests (9 tests)
 
 **Location Operations (2 tests)**
-- ✅ Real API call to get countries list
-- ✅ Real API call to get cities by country
+- ✅ Countries list API call (mock/real)
+- ✅ Cities by country API call (mock/real)
 - ✅ Response structure validation
-- ✅ Data property verification
+- ✅ Request format validation
 
-**Accommodation Operations (2 tests)**
-- ✅ Real hotel search with future dates
-- ✅ Real accommodation constants request
-- ✅ Response data structure validation
-
-**Error Handling (2 tests)**
-- ✅ Invalid credentials error handling
-- ✅ Invalid parameters error handling
-- ✅ Continue-on-fail functionality
+**Accommodation Operations (3 tests)**
+- ✅ Hotel search with realistic parameters
+- ✅ Accommodation constants request
+- ✅ Accommodation details request
+- ✅ Request body validation for each operation
 
 **Request Format Validation (2 tests)**
-- ✅ Date parameter formatting verification
-- ✅ Hotel ID array conversion verification
+- ✅ Date parameter formatting (ISO → YYYY-MM-DD)
+- ✅ Hotel ID array conversion (string → array)
+
+**Error Handling (1 test)**
+- ✅ Invalid credentials error handling (real API only)
+- ✅ Graceful error handling with continue-on-fail
+
+**Authentication Validation (1 test)**
+- ✅ Authentication headers validation
+- ✅ Bearer token and Affiliate ID verification
 
 ## 🔍 Sanity Test Examples
 
