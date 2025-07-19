@@ -46,7 +46,11 @@ Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes
 
 ## Credentials
 
-You need to be a Booking.com partner to use this node. Sign up at [Booking.com Partner Hub](https://partner.booking.com/) to get API access.
+You need to be a Booking.com partner to use this node. You need to generate an API key (Bearer Token) for your API user:
+Log in to the [Affiliate Partner Centre](https://spadmin.booking.com/partner/login-v3.html) using your partner credentials (username and password).
+
+Generate API key token.
+
 
 ### Authentication Setup
 
