@@ -1,48 +1,174 @@
-![Banner image](https://user-images.githubusercontent.com/10284570/173569848-c624317f-42b1-45a6-ab09-f0ea3c247648.png)
+# n8n-nodes-booking
 
-# n8n-nodes-starter
+This is an n8n community node. It lets you use Booking.com Demand API in your n8n workflows.
 
-This repo contains example nodes to help you get started building your own custom integrations for [n8n](https://n8n.io). It includes the node linter and other dependencies.
+Booking.com is the world's leading accommodation booking platform, offering access to millions of properties worldwide through their comprehensive API for searching accommodations, managing bookings, and processing payments.
 
-To make your custom node available to the community, you must create it as an npm package, and [submit it to the npm registry](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry).
+[n8n](https://n8n.io/) is a [fair-code licensed](https://docs.n8n.io/reference/license/) workflow automation platform.
 
-If you would like your node to be available on n8n cloud you can also [submit your node for verification](https://docs.n8n.io/integrations/creating-nodes/deploy/submit-community-nodes/).
+[Installation](#installation)  
+[Operations](#operations)  
+[Credentials](#credentials)  
+[Compatibility](#compatibility)  
+[Usage](#usage)  
+[Resources](#resources)  
+[Version history](#version-history)
 
-## Prerequisites
+## Installation
 
-You need the following installed on your development machine:
+Follow the [installation guide](https://docs.n8n.io/integrations/community-nodes/installation/) in the n8n community nodes documentation.
 
-* [git](https://git-scm.com/downloads)
-* Node.js and npm. Minimum version Node 20. You can find instructions on how to install both using nvm (Node Version Manager) for Linux, Mac, and WSL [here](https://github.com/nvm-sh/nvm). For Windows users, refer to Microsoft's guide to [Install NodeJS on Windows](https://docs.microsoft.com/en-us/windows/dev-environment/javascript/nodejs-on-windows).
-* Install n8n with:
-  ```
-  npm install n8n -g
-  ```
-* Recommended: follow n8n's guide to [set up your development environment](https://docs.n8n.io/integrations/creating-nodes/build/node-development-environment/).
+## Operations
 
-## Using this starter
+**Accommodations**
+- Search accommodations
+- Check availability (single/bulk)
+- Get accommodation details
+- Get accommodation reviews
+- Get accommodation chains
+- Get accommodation constants
 
-These are the basic steps for working with the starter. For detailed guidance on creating and publishing nodes, refer to the [documentation](https://docs.n8n.io/integrations/creating-nodes/).
+**Locations**
+- Get cities
+- Get countries
+- Get airports
+- Get landmarks
 
-1. [Generate a new repository](https://github.com/n8n-io/n8n-nodes-starter/generate) from this template repository.
-2. Clone your new repo:
-   ```
-   git clone https://github.com/<your organization>/<your-repo-name>.git
-   ```
-3. Run `npm i` to install dependencies.
-4. Open the project in your editor.
-5. Browse the examples in `/nodes` and `/credentials`. Modify the examples, or replace them with your own nodes.
-6. Update the `package.json` to match your details.
-7. Run `npm run lint` to check for errors or `npm run lintfix` to automatically fix errors when possible.
-8. Test your node locally. Refer to [Run your node locally](https://docs.n8n.io/integrations/creating-nodes/test/run-node-locally/) for guidance.
-9. Replace this README with documentation for your node. Use the [README_TEMPLATE](README_TEMPLATE.md) to get started.
-10. Update the LICENSE file to use your details.
-11. [Publish](https://docs.npmjs.com/packages-and-modules/contributing-packages-to-the-registry) your package to npm.
+**Orders**
+- Create booking
+- Get order details
+- Cancel order
+- Modify order
 
-## More information
+**Payments**
+- Get payment methods
+- Process payment
 
-Refer to our [documentation on creating nodes](https://docs.n8n.io/integrations/creating-nodes/) for detailed information on building your own nodes.
+## Credentials
 
-## License
+You need to be a Booking.com partner to use this node. Sign up at [Booking.com Partner Hub](https://partner.booking.com/) to get API access.
 
-[MIT](https://github.com/n8n-io/n8n-nodes-starter/blob/master/LICENSE.md)
+### Authentication Setup
+
+1. Go to **Credentials** in your n8n instance
+2. Click **Add Credential** → **Booking.com API**
+3. Fill in the required fields:
+   - **Environment**: Choose Sandbox (testing) or Production
+   - **Bearer Token**: Your API authentication token from Booking.com
+   - **Affiliate ID**: Your Booking.com affiliate identifier
+
+### Environment Selection
+- **Sandbox**: `https://demandapi-sandbox.booking.com/3.1/` (for testing)
+- **Production**: `https://demandapi.booking.com/3.1/` (for live data)
+
+## Compatibility
+
+Minimum n8n version: 1.0.0
+
+Tested with n8n versions:
+- 1.0.x
+- 1.30.x (latest)
+
+This node uses n8n's built-in HTTP request functionality and should be compatible with all modern n8n versions.
+
+## Usage
+
+### 1. Search for Hotels
+
+```json
+{
+  "resource": "accommodations",
+  "operation": "search",
+  "destId": "20033173",
+  "checkinDate": "2024-06-01",
+  "checkoutDate": "2024-06-03",
+  "adults": 2,
+  "language": "en-gb",
+  "additionalOptions": {
+    "currency": "USD",
+    "rows": 25,
+    "sortBy": "popularity"
+  }
+}
+```
+
+### 2. Check Hotel Availability
+
+```json
+{
+  "resource": "accommodations",
+  "operation": "checkAvailability",
+  "hotelIds": "12345,67890",
+  "checkinDate": "2024-06-01",
+  "checkoutDate": "2024-06-03",
+  "adults": 2,
+  "language": "en-gb"
+}
+```
+
+### 3. Get Cities by Country
+
+```json
+{
+  "resource": "locations",
+  "operation": "getCities",
+  "countryCode": "US",
+  "language": "en-gb",
+  "additionalOptions": {
+    "rows": 100
+  }
+}
+```
+
+### 4. Get Order Details
+
+```json
+{
+  "resource": "orders",
+  "operation": "getOrderDetails",
+  "orderId": "your-order-id",
+  "language": "en-gb"
+}
+```
+
+### Key Features
+
+- **Multi-language support**: 7+ languages (en-gb, en-us, de, es, fr, it, nl)
+- **Environment switching**: Test with sandbox, deploy to production
+- **Comprehensive error handling**: Detailed error messages for different HTTP status codes
+- **Built-in pagination**: Handle large result sets efficiently
+- **Rate limit handling**: Automatic retry logic for API limits
+
+### Common Issues & Solutions
+
+**Authentication Errors**
+- Verify your Bearer token and Affiliate ID are correct
+- Ensure you're using the right environment (sandbox vs production)
+
+**Parameter Errors**
+- Check that all required parameters are provided
+- Validate date formats (YYYY-MM-DD)
+- Ensure numeric values for hotel IDs and guest counts
+
+ad**Rate Limiting**
+- The API has rate limits that vary by partner agreement
+- The node includes built-in retry logic for rate limit errors
+- Start with sandbox environment for testing
+
+
+
+## Resources
+
+* [n8n community nodes documentation](https://docs.n8n.io/integrations/#community-nodes)
+* [Booking.com Demand API documentation](https://developers.booking.com/demand/docs/open-api/demand-api)
+* [Booking.com Partner Hub](https://partner.booking.com/)
+
+## Version history
+
+**v1.0.0** - Initial release
+- Full Booking.com Demand API integration
+- Support for accommodations, locations, orders, and payments
+- Multi-language support (7 languages)
+- Comprehensive error handling and validation
+- Sandbox and production environment support
+- Built-in pagination and rate limiting 
